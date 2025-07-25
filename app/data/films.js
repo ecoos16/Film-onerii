@@ -1,4 +1,4 @@
-const films = [
+let films = [
     {
         id: 1,
         title: "Inception",
@@ -78,7 +78,7 @@ const films = [
     },
     {
         id: 8,
-        title: "(The Curious Case of Benjamin Button",
+        title: "The Curious Case of Benjamin Button",
         description: "Tersine yaşlanan bir adamın sıra dışı yaşam öyküsü.", poster: "https://m.media-amazon.com/images/I/91y51uzkbhL._UF894,1000_QL80_.jpg",
         imdb: "7.6/10",
         tür: "Romantik/Fantastik ",

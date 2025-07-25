@@ -2,10 +2,10 @@
 
 import React, { createContext, useState, useContext } from "react";
 
-// 1. Context oluşturuluyor
+// Context ,global state
 const FavoritesContext = createContext();
 
-// 2. Provider bileşeni
+// Provider 
 export function FavoritesProvider({ children }) {
     const [favorites, setFavorites] = useState([]);
 
@@ -21,12 +21,12 @@ export function FavoritesProvider({ children }) {
         setFavorites((prev) => prev.filter((m) => m.id !== id));
     };
 
-    // Bir film favorilerde mi?
+    // favoride mi?
     const isFavorite = (id) => {
         return favorites.some((m) => m.id === id);
     };
 
-    // Provider döndürülüyor (DİKKAT! return artık fonksiyonun içinde!)
+
     return (
         <FavoritesContext.Provider
             value={{ favorites, addToFavorites, removeFromFavorite, isFavorite }}
@@ -36,7 +36,7 @@ export function FavoritesProvider({ children }) {
     );
 }
 
-// 3. Custom Hook
+// Custom Hook
 export function useFavorites() {
     return useContext(FavoritesContext);
 }

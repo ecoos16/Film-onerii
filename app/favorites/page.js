@@ -14,6 +14,7 @@ export default function FavoritesPage() {
                 <p className="text-gray-600">Henüz favori film eklemediniz.</p>
             ) : (
                 <div className="flex flex-wrap gap-4">
+                    {/* array maple liste */}
                     {favorites.map((film) => (
                         <FilmCard key={film.id} film={film} />
                     ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";  // useEffect ekledim
 import filmsData from "@/app/data/films";
 
 export default function AdminPage() {
@@ -19,6 +19,18 @@ export default function AdminPage() {
         poster: "",
     });
 
+    // sayfa açıldığında API'den filmleri çekmek için useEffect ekledim
+    useEffect(() => {
+        const fetchFilms = async () => {
+            const res = await fetch("/api/films");
+            if (res.ok) {
+                const data = await res.json();
+                setFilms(data);
+            }
+        };
+        fetchFilms();
+    }, []);
+
     const handleLogin = () => {
         if (password === "123456") {
             setIsLoggedIn(true);
@@ -27,8 +39,21 @@ export default function AdminPage() {
         }
     };
 
-    const handleDelete = (id) => {
-        setFilms(films.filter((film) => film.id !== id));
+    // handleDelete fonksiyonunu API çağrısı yapacak şekilde değiştirdim
+    const handleDelete = async (id) => {
+        const res = await fetch("/api/films", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id }),
+        });
+        if (res.ok) {
+            // API'den yeni listeyi çek
+            const res2 = await fetch("/api/films");
+            if (res2.ok) {
+                const data = await res2.json();
+                setFilms(data);
+            }
+        }
     };
 
     const handleInputChange = (e) => {
@@ -36,20 +61,36 @@ export default function AdminPage() {
         setNewFilm({ ...newFilm, [name]: value });
     };
 
-    const handleAddFilm = (e) => {
+    // handleAddFilm fonksiyonunu API çağrısı yapacak şekilde değiştirdim
+    const handleAddFilm = async (e) => {
         e.preventDefault();
-        setFilms([...films, { ...newFilm, id: Date.now() }]);
-        setNewFilm({
-            id: Date.now(),
-            title: "",
-            süre: 0,
-            tür: "",
-            yönetmen: "",
-            imdb: "",
-            oyuncular: "",
-            Konu: "",
-            poster: "",
+
+        const res = await fetch("/api/films", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newFilm),
         });
+
+        if (res.ok) {
+            setNewFilm({
+                id: Date.now(),
+                title: "",
+                süre: 0,
+                tür: "",
+                yönetmen: "",
+                imdb: "",
+                oyuncular: "",
+                Konu: "",
+                poster: "",
+            });
+
+            // Yeni film eklendikten sonra güncel listeyi çek
+            const res2 = await fetch("/api/films");
+            if (res2.ok) {
+                const data = await res2.json();
+                setFilms(data);
+            }
+        }
     };
 
     if (!isLoggedIn) {
@@ -63,7 +104,10 @@ export default function AdminPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     className="border p-2 w-full mb-2"
                 />
-                <button onClick={handleLogin} className="bg-blue-600 text-white px-4 py-2 rounded">
+                <button
+                    onClick={handleLogin}
+                    className="bg-blue-600 text-white px-4 py-2 rounded"
+                >
                     Giriş Yap
                 </button>
             </div>
@@ -74,7 +118,10 @@ export default function AdminPage() {
         <div style={{ maxWidth: 800, margin: "2rem auto" }}>
             <h1 className="text-3xl mb-4">Film Yönetimi</h1>
 
-            <form onSubmit={handleAddFilm} className="mb-8 border p-4 rounded shadow">
+            <form
+                onSubmit={handleAddFilm}
+                className="mb-8 border p-4 rounded shadow"
+            >
                 <h2 className="text-xl mb-2">Yeni Film Ekle</h2>
                 <input
                     name="title"
@@ -137,7 +184,10 @@ export default function AdminPage() {
                     onChange={handleInputChange}
                     className="border p-2 w-full mb-2"
                 />
-                <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">
+                <button
+                    type="submit"
+                    className="bg-green-600 text-white px-4 py-2 rounded"
+                >
                     Film Ekle
                 </button>
             </form>
@@ -145,7 +195,10 @@ export default function AdminPage() {
             <h2 className="text-2xl mb-4">Mevcut Filmler</h2>
             <ul>
                 {films.map((film) => (
-                    <li key={film.id} className="border p-2 mb-2 rounded flex justify-between items-center">
+                    <li
+                        key={film.id}
+                        className="border p-2 mb-2 rounded flex justify-between items-center"
+                    >
                         <div>
                             <strong>{film.title}</strong> - {film.tür} - {film.süre} dk
                         </div>

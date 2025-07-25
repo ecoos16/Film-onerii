@@ -1,8 +1,8 @@
-const films = [
+let films = [
     {
         id: 1,
         title: "Inception",
-        description: "Bilim kurgu,rüya içinde rüya ", poster: "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg",
+        description: "Bilim kurgu,rüya içinde rüya. ", poster: "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg",
         imdb: "8.8/10",
         tür: "Aksiyon/Bilim Kurgu",
         oyuncular: "Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page",
@@ -36,7 +36,7 @@ const films = [
     {
         id: 4,
         title: "Truman Show",
-        description: "Hayatının her anı gizlice yayınlanan bir adamın uyanış hikâyesi ", poster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAVAKK8TMnF02XIzL3LMoxOI-amk98PT9HSw&s",
+        description: "Hayatının her anı gizlice yayınlanan bir adamın uyanış hikâyesi. ", poster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAVAKK8TMnF02XIzL3LMoxOI-amk98PT9HSw&s",
         imdb: "8.2/10",
         tür: "Komedi/Bilim Kurgu",
         oyuncular: "Jim Carrey, Ed Harris, Laura Linney, Noah Emmerich, Natascha McElhone.",
@@ -89,3 +89,27 @@ const films = [
     }
 ];
 export default films;
+
+//API Route fonk.
+export async function GET() {
+    return new Response(JSON.stringify(films), {
+        headers: { 'Content-Type': 'application/json' },
+    });
+}
+
+export async function POST(req) {
+    const newFilm = await req.json();
+    newFilm.id = Date.now();
+    films.push(newFilm);
+    return new Response(JSON.stringify({ success: true, film: newFilm }), {
+        headers: { 'Content-Type': 'application/json' },
+    });
+}
+
+export async function DELETE(req) {
+    const { id } = await req.json();
+    films = films.filter((film) => film.id !== id);
+    return new Response(JSON.stringify({ success: true }), {
+        headers: { 'Content-Type': 'application/json' },
+    });
+}

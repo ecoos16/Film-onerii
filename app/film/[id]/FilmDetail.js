@@ -2,14 +2,13 @@
 import React, { useState, useEffect } from "react";
 import { useFavorites } from "@/app/context/FavoritesContext";
 import films from "@/app/data/films";
-
 export default function FilmDetail({ film }) {
     const { addToFavorites, removeFromFavorite, isFavorite } = useFavorites();
     const [bitişZamani, setBitişZamani] = useState("");
 
     useEffect(() => {
         const saat = new Date();
-        const bitiş = new Date(saat.getTime() + film.süre * 60000); // dakika * 60000 ms
+        const bitiş = new Date(saat.getTime() + film.süre * 60000);
         setBitişZamani(bitiş.toLocaleTimeString());
     }, [film.süre]);
 

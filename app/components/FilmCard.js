@@ -3,10 +3,11 @@
 import React from "react";
 import { useFavorites } from "../context/FavoritesContext";
 import Link from "next/link";
-//arrow function,Context API
-export default function FilmCard({ film }) {
-    const { addToFavorites, removeFromFavorite, isFavorite } = useFavorites();
 
+export default function FilmCard({ film }) {
+    //Context API =>useFavorites
+    const { addToFavorites, removeFromFavorite, isFavorite } = useFavorites();
+    //arrow func.
     const toggleFavorite = () => {
         if (isFavorite(film.id)) {
             removeFromFavorite(film.id);
@@ -17,10 +18,17 @@ export default function FilmCard({ film }) {
     //conditional rendering ,routing
     return (
         <div className="border p-4 rounded shadow-md w-60 text-center">
+            {/* Routing */}
             <Link href={`/film/${film.id}`}>
                 <h2 className="text-lg font-bold mb-2">{film.title}</h2>
+                {/* Film açıklaması */}
+
                 <img src={film.poster} alt={film.title} className="mb-2 w-full h-80 object-cover" />
+                {film.description && (
+                    <p className="text-sm text-gray-600 mb-2">{film.description}</p>
+                )}
             </Link>
+            {/* conditional rendering */}
             {film.imdb && (
                 <p className="text-sm text-gray-400 mb-1">
                     IMDB: <span className="font-semibold">{film.imdb}</span>

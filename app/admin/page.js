@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";  // useEffect ekledim
-import filmsData from "@/app/data/films";
+import React, { useState, useEffect } from "react";
 
+// Admin Paneli
 export default function AdminPage() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [password, setPassword] = useState("");
-    const [films, setFilms] = useState(filmsData);
+    const [films, setFilms] = useState([]); // API'den film verileri
     const [newFilm, setNewFilm] = useState({
-        id: Date.now(),
         title: "",
         süre: 0,
         tür: "",
@@ -19,7 +18,7 @@ export default function AdminPage() {
         poster: "",
     });
 
-    // sayfa açıldığında API'den filmleri çekmek için useEffect ekledim
+    // sayfa açıldığında API'den filmleri çekmek için useEffect
     useEffect(() => {
         const fetchFilms = async () => {
             const res = await fetch("/api/films");
@@ -31,6 +30,7 @@ export default function AdminPage() {
         fetchFilms();
     }, []);
 
+    // admin giriş kontrolü
     const handleLogin = () => {
         if (password === "123456") {
             setIsLoggedIn(true);
@@ -39,29 +39,28 @@ export default function AdminPage() {
         }
     };
 
-    // handleDelete fonksiyonunu API çağrısı yapacak şekilde değiştirdim
+    // film silme - id'yi query parametre olarak gönderiyoruz
     const handleDelete = async (id) => {
-        const res = await fetch("/api/films", {
+        const res = await fetch(`/api/films?id=${id}`, {
             method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id }),
         });
+
         if (res.ok) {
-            // API'den yeni listeyi çek
-            const res2 = await fetch("/api/films");
-            if (res2.ok) {
-                const data = await res2.json();
+            const updated = await fetch("/api/films");
+            if (updated.ok) {
+                const data = await updated.json();
                 setFilms(data);
             }
         }
     };
 
+    // form alanlarını güncelleme
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setNewFilm({ ...newFilm, [name]: value });
     };
 
-    // handleAddFilm fonksiyonunu API çağrısı yapacak şekilde değiştirdim
+    // yeni film ekleme
     const handleAddFilm = async (e) => {
         e.preventDefault();
 
@@ -73,7 +72,6 @@ export default function AdminPage() {
 
         if (res.ok) {
             setNewFilm({
-                id: Date.now(),
                 title: "",
                 süre: 0,
                 tür: "",
@@ -84,15 +82,15 @@ export default function AdminPage() {
                 poster: "",
             });
 
-            // Yeni film eklendikten sonra güncel listeyi çek
-            const res2 = await fetch("/api/films");
-            if (res2.ok) {
-                const data = await res2.json();
+            const updated = await fetch("/api/films");
+            if (updated.ok) {
+                const data = await updated.json();
                 setFilms(data);
             }
         }
     };
 
+    // giriş yapılmadıysa parola ekranı
     if (!isLoggedIn) {
         return (
             <div style={{ maxWidth: 400, margin: "2rem auto", textAlign: "center" }}>
@@ -114,14 +112,13 @@ export default function AdminPage() {
         );
     }
 
+    // admin paneli (film listeleme + film ekleme)
     return (
         <div style={{ maxWidth: 800, margin: "2rem auto" }}>
             <h1 className="text-3xl mb-4">Film Yönetimi</h1>
 
-            <form
-                onSubmit={handleAddFilm}
-                className="mb-8 border p-4 rounded shadow"
-            >
+            {/* Yeni Film Ekleme Formu */}
+            <form onSubmit={handleAddFilm} className="mb-8 border p-4 rounded shadow">
                 <h2 className="text-xl mb-2">Yeni Film Ekle</h2>
                 <input
                     name="title"
@@ -192,18 +189,19 @@ export default function AdminPage() {
                 </button>
             </form>
 
+            {/* Film Listeleme ve Silme */}
             <h2 className="text-2xl mb-4">Mevcut Filmler</h2>
             <ul>
                 {films.map((film) => (
                     <li
-                        key={film.id}
+                        key={film._id} // MongoDB'den gelen ID
                         className="border p-2 mb-2 rounded flex justify-between items-center"
                     >
                         <div>
                             <strong>{film.title}</strong> - {film.tür} - {film.süre} dk
                         </div>
                         <button
-                            onClick={() => handleDelete(film.id)}
+                            onClick={() => handleDelete(film._id)}
                             className="bg-red-600 text-white px-3 py-1 rounded"
                         >
                             Sil

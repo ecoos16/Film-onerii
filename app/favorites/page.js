@@ -3,7 +3,7 @@
 import React from "react";
 import { useFavorites } from "../context/FavoritesContext";
 import FilmCard from "../components/FilmCard";
-import films from "../data/films";
+
 export default function FavoritesPage() {
     const { favorites } = useFavorites();
 
@@ -14,9 +14,9 @@ export default function FavoritesPage() {
                 <p className="text-gray-600">Henüz favori film eklemediniz.</p>
             ) : (
                 <div className="flex flex-wrap gap-4">
-                    {/* array maple liste */}
+                    {/* Array maple listele */}
                     {favorites.map((film) => (
-                        <FilmCard key={film.id} film={film} />
+                        <FilmCard key={film._id.toString()} film={film} />
                     ))}
                 </div>
             )}

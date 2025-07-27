@@ -1,7 +1,8 @@
+//seçili filmin detaylı özelliklerini gösterir
 "use client"
 import React, { useState, useEffect } from "react";
 import { useFavorites } from "@/app/context/FavoritesContext";
-import films from "@/app/data/films";
+
 export default function FilmDetail({ film }) {
     const { addToFavorites, removeFromFavorite, isFavorite } = useFavorites();
     const [bitişZamani, setBitişZamani] = useState("");
@@ -13,8 +14,8 @@ export default function FilmDetail({ film }) {
     }, [film.süre]);
 
     const toggleFavorite = () => {
-        if (isFavorite(film.id)) {
-            removeFromFavorite(film.id);
+        if (isFavorite(film._id.toString())) {
+            removeFromFavorite(film._id.toString());
         } else {
             addToFavorites(film);
         }
@@ -56,7 +57,7 @@ export default function FilmDetail({ film }) {
                     onClick={toggleFavorite}
                     className="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-700"
                 >
-                    {isFavorite(film.id) ? "Favorilerden Çıkar" : "Favorilere Ekle"}
+                    {isFavorite(film._id.toString()) ? "Favorilerden Çıkar" : "Favorilere Ekle"}
                 </button>
             </div>
         </div>

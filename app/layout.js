@@ -1,3 +1,4 @@
+//tüm sayfalar için ortak başlık, menü ve footer
 import './globals.css'
 import { FavoritesProvider } from './context/FavoritesContext'
 import Link from 'next/link'

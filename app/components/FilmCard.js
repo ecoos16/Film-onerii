@@ -8,9 +8,10 @@ export default function FilmCard({ film }) {
     //Context API =>useFavorites
     const { addToFavorites, removeFromFavorite, isFavorite } = useFavorites();
     //arrow func.
+    //film favorideyse çıkar,yoksa ekle
     const toggleFavorite = () => {
-        if (isFavorite(film.id)) {
-            removeFromFavorite(film.id);
+        if (isFavorite(film._id.toString())) {
+            removeFromFavorite(film._id.toString());
         } else {
             addToFavorites(film);
         }
@@ -19,7 +20,7 @@ export default function FilmCard({ film }) {
     return (
         <div className="border p-4 rounded shadow-md w-60 text-center">
             {/* Routing */}
-            <Link href={`/film/${film.id}`}>
+            <Link href={`/film/${film._id.toString()}`}>
                 <h2 className="text-lg font-bold mb-2">{film.title}</h2>
                 {/* Film açıklaması */}
 
@@ -41,7 +42,7 @@ export default function FilmCard({ film }) {
                 onClick={toggleFavorite}
                 className="bg-gray-900 text-white px-4 py-2 rounded mt-2 hover:bg-gray-700"
             >
-                {isFavorite(film.id) ? "Favorilerden Çıkar" : "Favorilere Ekle"}
+                {isFavorite(film._id.toString()) ? "Favorilerden Çıkar" : "Favorilere Ekle"}
             </button>
         </div>
     );

@@ -11,19 +11,20 @@ export function FavoritesProvider({ children }) {
 
     // Favoriye ekleme
     const addToFavorites = (movie) => {
-        if (!favorites.some((m) => m.id === movie.id)) {
+        // MongoDB filmlerinde id _id olarak geliyor
+        if (!favorites.some((m) => m._id === movie._id)) {
             setFavorites((prev) => [...prev, movie]);
         }
     };
 
     // Favoriden çıkarma
     const removeFromFavorite = (id) => {
-        setFavorites((prev) => prev.filter((m) => m.id !== id));
+        setFavorites((prev) => prev.filter((m) => m._id !== id));
     };
 
     // favoride mi?
     const isFavorite = (id) => {
-        return favorites.some((m) => m.id === id);
+        return favorites.some((m) => m._id === id);
     };
 
 

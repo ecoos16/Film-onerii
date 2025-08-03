@@ -2,6 +2,7 @@
 import './globals.css'
 import { FavoritesProvider } from './context/FavoritesContext'
 import Link from 'next/link'
+import { cookies } from 'next/headers';
 
 // site başlığı ve açıklama
 export const metadata = {
@@ -10,6 +11,8 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
+  const token = cookies().get('token');
+  console.log("token", token);
   return (
     <html lang="tr">
       <body>
@@ -29,11 +32,21 @@ export default function RootLayout({ children }) {
               </nav>
 
               {/* Routing ve link */}
-              <Link href="/admin">
-                <button className="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-700">
-                  Giriş Yap
-                </button>
-              </Link>
+              {/* Routing ve link */}
+              {token ? (
+                <form action="/api/films/auth/logout" method="POST">
+                  <button type="submit" className="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-700">
+                    Çıkış Yap
+                  </button>
+                </form>
+              ) : (
+                <Link href="/admin">
+                  <button className="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-700">
+                    Giriş Yap
+                  </button>
+                </Link>
+              )}
+
             </div>
           </header>
           {/* chiildren propsu  main alanı her sayfanın içeriğini children gösterir */}

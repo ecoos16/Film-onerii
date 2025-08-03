@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 
 // Admin Paneli
 export default function AdminPage() {
+    const [email, setEmail] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [password, setPassword] = useState("");
     const [films, setFilms] = useState([]); // API'den film verileri
@@ -18,6 +19,7 @@ export default function AdminPage() {
         poster: "",
     });
 
+
     // sayfa açıldığında API'den filmleri çekmek için useEffect
     useEffect(() => {
         const fetchFilms = async () => {
@@ -31,11 +33,28 @@ export default function AdminPage() {
     }, []);
 
     // admin giriş kontrolü
-    const handleLogin = () => {
-        if (password === "123456") {
-            setIsLoggedIn(true);
-        } else {
-            alert("Yanlış parola");
+    const handleLogin = async () => {
+        try {
+            const res = await fetch("/api/films/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+
+            if (res.ok) {
+                setIsLoggedIn(true);
+                console.log("başarılı giriş")
+            } else {
+                const errorData = await res.json();
+                alert("başarısız giriş", errorData);
+            }
+        } catch (err) {
+            console.error("error", err)
         }
     };
 
@@ -96,12 +115,21 @@ export default function AdminPage() {
             <div style={{ maxWidth: 400, margin: "2rem auto", textAlign: "center" }}>
                 <h2>Admin Girişi</h2>
                 <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="border p-2 w-full mb-2"
+                />
+
+                <input
                     type="password"
                     placeholder="Parola"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="border p-2 w-full mb-2"
                 />
+
                 <button
                     onClick={handleLogin}
                     className="bg-blue-600 text-white px-4 py-2 rounded"
